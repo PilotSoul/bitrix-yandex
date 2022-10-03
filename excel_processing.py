@@ -4,7 +4,7 @@ import requests
 
 report = pd.DataFrame(columns=['Проект', 'Задача', 'Ответственный', 'Исполнитель', 'Затраченное время', 'Итого'])
 URL = 'https://cloud-api.yandex.net/v1/disk/resources'
-TOKEN = 'y0_AgAEA7qkROuxAAhwEQAAAADPzLZNnWfdrZCyRrOw7_ss_7j6CQU7Tbs'
+TOKEN = '' # яндекс токен
 headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': f'OAuth {TOKEN}'}
 
 

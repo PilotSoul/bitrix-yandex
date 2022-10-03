@@ -8,7 +8,7 @@ from datetime import datetime
 app = Flask(__name__)
 app.debug = True
 
-webhook = "https://truecode.bitrix24.ru/rest/599/du721ie4n0jjvbc2/"
+webhook = "" #вставить свой вебхук
 tasks_path = 'task.item.list.json'
 full_task_path = 'tasks.task.get'
 elapse_time_path = 'task.elapseditem.getlist'
@@ -16,7 +16,6 @@ elapse_time_path = 'task.elapseditem.getlist'
 
 @app.route('/')
 def index():
-    # return "Hello"
     return render_template('index.html')
 
 
@@ -33,9 +32,9 @@ def bitrix():
     save_report(rep)
     now = datetime.now()
     t = now.strftime("%d-%m-%Y_%H-%M")
-    p = 'test_folder'
-    load_path = "/Users/PilotSoul/Desktop/bitrix_yandex/report.xlsx"
-    save_path = f"test_folder/report_{str(t)}.xlsx"
+    p = '' # путь до папки на яндекс диске
+    load_path = "" # путь до отчета (локальный)
+    save_path = f"{p}/report_{str(t)}.xlsx" # вставить свой  путь до папки
     upload_file(load_path, save_path, False)
 
     return 'Ok'

@@ -71,7 +71,7 @@ def bitrix():
     folder_path = 'reports'
     save_path = f"{folder_path}/report_{date_from}_{date_to}.xlsx"
     upload_file(load_path, save_path, False)
-    return redirect('/')
+    return redirect('https://disk.yandex.ru/d/21xSRNmfdR-kVA/')
 
 
 if __name__ == '__main__':

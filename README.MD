@@ -17,8 +17,8 @@
 Python (Flask, Fast_Bitrix, Pandas)
 ### Инструкция по запуску:
 #### Требования к запуску:
-- Python 3.6+
-- pip3 19.0+
+- Python 3.10+
+- pip3 22.0+
 #### Клонирование проекта
 git clone https://gitlab.com/PilotSoul/bitrix-yandex.git
 #### Установка зависимостей

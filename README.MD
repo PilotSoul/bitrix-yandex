@@ -25,7 +25,7 @@ git clone https://gitlab.com/PilotSoul/bitrix-yandex.git
 pip install -r requirements.txt
 #### Добавление своих ключей
 Создайте .env файл со следующими переменными
-![Alt-текст](/static/pathes.png)
+<img src="/static/pathes.pn" width="300">
 где url - это путь к вашему яндекс диску, token - токен яндекс приложения, load_path - локальный путь до отчета, webhook - вебхук от Bitrix
 #### Запуск приложения
 python app.py

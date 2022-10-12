@@ -1,0 +1,100 @@
+.b-page
+{
+    width: 100%;
+    margin: 0;
+    background-color: #f7f7f7;
+    font-family: Oswald,Tahoma;
+    font-size: 12px;
+}
+h3
+{
+    color: rgb(35, 72, 92);
+    font-size: 1.5rem;
+    font-family: Inter,sans-serif;
+    padding-top: 0px;
+    text-align: center;
+}
+.b-page__window
+{
+    background-color:#ffffff;
+    height: 47%;
+    width: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 300px;
+    max-width: 400px;
+    border: solid #325c86;
+    border-radius: 5%;
+}
+.b-top
+{
+    background-color:#ffffff;
+    height: 70%;
+    width: 100%;
+    margin: 5% auto;
+    min-width: 300px;
+    max-width: 400px;
+    /* top: 30%;
+    transform: translate(-50%); */
+}
+.b-main
+{
+    background-color:#ffffff;
+    height: 10%;
+    width: 100%;
+    margin: 5% auto;
+    min-width: 300px;
+    max-width: 400px;
+}
+p
+{
+    color: rgb(35, 72, 92);
+    /* font-size: 150%; */
+    font-size: 1.2rem;
+    font-family: Inter,sans-serif;
+    padding-top: 15px;
+    text-align: center;
+}
+input
+{
+    font-size: 18px;
+    position: relative;
+    margin-left: 50%;
+    transform: translate(-50%);
+}
+.btn {
+    /* font-size: 150%;
+    font-family: 'Signika', sans-serif; */
+    text-align: center;
+    font-family: Inter,sans-serif;
+    font-size: 1.2rem;
+    text-decoration: none;
+    position: relative;
+    margin-left: 50%;
+    align-items: center;
+    transform: translate(-50%);
+    height: 40px;
+    width: 200px;
+    text-decoration: none;
+    transition: box-shadow .2s,-webkit-box-shadow .2s;
+    white-space: nowrap;
+    border: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    background-size: 200% auto;           
+    box-shadow: 0 0 20px #eee;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: transparent 0 0 0 3px,rgba(18, 18, 18, .1) 0 6px 20px;
+    box-sizing: border-box;
+    color: rgb(30, 61, 78);
+    cursor: pointer;
+  }       
+.btn:hover {
+  box-shadow: #325c86 0 0 0 2px, transparent 0 0 0 0;
+}
+ 
+ 

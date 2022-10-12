@@ -4,24 +4,23 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="stylesheet" href="https://cdn.korzh.com/metroui/v4/css/metro-all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}" type="text/css"/>
-<!--    <script src="{{ url_for('static', filename='main.js') }}"></script>-->
-    <title>Bitrix to excel</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <title>Yandex_bitrix</title>
 </head>
-<body>
-    <div class="parent">
-         <form action="/forward/" method="post">
-<!--              <input type="text" data-role="calendarpicker" value="1972/12/21" data-format="%d %b %Y">-->
-<!--             <input type="date" id="start" name="trip-start"-->
-<!--       value="2018-07-22"-->
-<!--       min="2018-01-01" max="2018-12-31">-->
-            <div class="p">
-<!--                <input class="button" type="button" value="Generate Report">-->
-                <button class="button" type="submit">Generate Report</button>
+<body class="b-page">
+    <div class="b-page__window">
+        <form action="/forward/" method="post">
+            <div class="b-top">
+                <h3>Отчет из Bitrix</h3>
+                <p>Введите дату начала</p>
+                <input type="date" name="trip-f" value="2022-09-22">
+                <p>Введите дату конца</p>
+                <input type="date" name="trip-l" value="2022-10-22" min="">
             </div>
-
-         </form>
+            <div class="b-main">
+                <button class="btn">Синхронизировать</button>
+            </div>
+        </form>
     </div>
 </body>
 </html>

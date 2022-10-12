@@ -20,11 +20,12 @@ Python (Flask, Fast_Bitrix, Pandas)
 - Python 3.6+
 - pip3 19.0+
 #### Клонирование проекта
-git clone 
-#### Утсановка зависимостей
+git clone https://gitlab.com/PilotSoul/bitrix-yandex.git
+#### Установка зависимостей
 pip install -r requirements.txt
 #### Добавление своих ключей
 Создайте .env файл со следующими переменными
-
+![Alt-текст](/static/pathes.png)
+где url - это путь к вашему яндекс диску, token - токен яндекс приложения, load_path - локальный путь до отчета, webhook - вебхук от Bitrix
 ### В планах:
 - оптимизация обработки запросов

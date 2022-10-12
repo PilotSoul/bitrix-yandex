@@ -36,3 +36,4 @@ pip install -r requirements.txt
 python app.py
 ### В планах:
 - оптимизация обработки запросов
+- блокировка кнопки

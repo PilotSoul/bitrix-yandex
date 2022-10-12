@@ -28,7 +28,10 @@ pip install -r requirements.txt
 <br/>
 <img src="/static/pathes.png" width="300">
 <br/>
-где url - это путь к вашему яндекс диску, token - токен яндекс приложения, load_path - локальный путь до отчета, webhook - вебхук от Bitrix
+где url - это путь к вашему яндекс диску,
+token - токен яндекс приложения,
+load_path - локальный путь до отчета,
+webhook - вебхук от Bitrix
 #### Запуск приложения
 python app.py
 ### В планах:

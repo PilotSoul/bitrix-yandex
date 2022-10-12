@@ -1,19 +1,18 @@
 import pandas as pd
 import requests
+import dotenv
+import os
 
-
-report = pd.DataFrame(columns=['Проект', 'Задача', 'Ответственный', 'Исполнитель', 'Затраченное время', 'Итого'])
-URL = 'https://cloud-api.yandex.net/v1/disk/resources'
-TOKEN = '' # яндекс токен
+env = dotenv.find_dotenv()
+dotenv.load_dotenv(dotenv_path=env)
+URL = os.getenv('url')
+TOKEN = os.getenv('token')
+report = pd.DataFrame(columns=['Ответственный', 'Проект', 'Задача', 'Затраченное время', 'Запланированное время'])
 headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': f'OAuth {TOKEN}'}
 
 
 def upload_file(loadfile, savefile, replace=False):
-    global URL
-    """Загрузка файла.
-    savefile: Путь к файлу на Диске
-    loadfile: Путь к загружаемому файлу
-    replace: true or false Замена файла на Диске"""
+    global URL, headers, TOKEN
     res = requests.get(f'{URL}/upload?path={savefile}&overwrite={replace}', headers=headers).json()
     print(res)
     with open(loadfile, 'rb') as f:
@@ -23,64 +22,23 @@ def upload_file(loadfile, savefile, replace=False):
             print(res)
 
 
-def create_folder(path):
-    global URL
-    requests.put(f'{URL}?path={path}', headers=headers)
+def add_to_report(acc_name, project_name, task_name, el_time, t_plan):
+    global report
+    report.loc[len(report)] = {'Ответственный': acc_name, 'Проект': project_name,
+                               'Задача': task_name, 'Затраченное время': el_time, 'Запланированное время': t_plan}
 
 
-def add_to_report(full_name, task_name, project_name, acc_name, el_time):
-    # path = "report.xlsx"
-    report.loc[len(report)] = {'Проект': project_name, 'Задача': task_name,
-                               'Ответственный': full_name, 'Исполнитель': acc_name, 'Затраченное время': int(el_time)}
-    report["Итого"] = [report.loc[report["Исполнитель"] == v, "Затраченное время"].sum() for v in report["Исполнитель"]]
-    # report.to_excel(path)
-    return report
-
-
-def save_report(rep):
+def save_report():
+    global report
     path = "report.xlsx"
-    rep.to_excel(path)
-
-
-def check_ids(acc_id, b):
-    acc = b.get_all('user.get',
-                    params={
-                        "ID": int(acc_id),
-                    })
-    acc_name = f"{acc[0]['LAST_NAME']} {acc[0]['NAME']}"
-    return acc_name
-
-
-def find_task_info(task_path, task, b):
-    full_task = b.get_all(
-        task_path,
-        params={
-            "taskId": task['ID'],
-        })
-    # print(full_task)
-    full_name = f"{task['RESPONSIBLE_LAST_NAME']} {task['RESPONSIBLE_NAME']}"
-    task_name = f"{task['TITLE']}"
-    group = full_task['task']['group']
-    ids = full_task['task']['accomplices']
-    project_name = "Empty"
-    if group:
-        project_name = group['name']
-    return full_name, task_name, ids, project_name
-
-
-def find_elapse_time(elapse_time_path, task_id, b):
-    users_time = {}
-    elapsed_items = b.get_all(elapse_time_path,
-                              params={
-                                  "ID": int(task_id),
-                              })
-    for item in elapsed_items:
-        minutes = 0
-        name = check_ids(item['USER_ID'], b)
-        if name in users_time:
-            minutes = int(users_time[name]) + int(item['MINUTES'])
-            users_time[name] = minutes
-        else:
-            users_time[name] = item['MINUTES']
-    return users_time
+    report = report.drop_duplicates()
+    report = report.sort_values(by='Ответственный')
+    rep_dict = {v: report.loc[report["Ответственный"] == v, "Затраченное время"].sum() for v in report["Ответственный"]}
+    for key in rep_dict:
+        report.loc[len(report)] = {'Ответственный': key, 'Проект': '', 'Задача': 'яяя',
+                                   'Затраченное время': rep_dict[f'{key}'], 'Запланированное время': ''}
+    report = report.sort_values(by=['Ответственный', 'Задача'])
+    report.loc[(report["Задача"] == 'яяя'), 'Задача'] = "Итого"
+    report['Затраченное время'] = pd.to_datetime(report['Затраченное время'], unit='s').dt.strftime('%H:%M:%S')
+    report.to_excel(path, index=False)
 

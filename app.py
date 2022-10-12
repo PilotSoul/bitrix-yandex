@@ -1,17 +1,16 @@
 from fast_bitrix24 import Bitrix
 from excel_processing import *
-from flask import Flask, render_template
-from datetime import datetime
-
-
+from flask import Flask, render_template, request, redirect
+import dotenv
+import os
 
 app = Flask(__name__)
 app.debug = True
 
-webhook = "" #вставить свой вебхук
-tasks_path = 'task.item.list.json'
-full_task_path = 'tasks.task.get'
-elapse_time_path = 'task.elapseditem.getlist'
+env = dotenv.find_dotenv()
+dotenv.load_dotenv(dotenv_path=env)
+webhook = os.getenv('webhook')
+load_path = os.getenv('load_path')
 
 
 @app.route('/')
@@ -21,23 +20,58 @@ def index():
 
 @app.route('/forward/', methods=['POST'])
 def bitrix():
+    date_from = request.form['trip-f']
+    date_to = request.form['trip-l']
+    index = 0
     b = Bitrix(webhook)
-    tasks = b.get_all(tasks_path)
-    for task in tasks:
-        task_id = task['ID']
-        full_name, task_name, ids, project_name = find_task_info(full_task_path, task, b)
-        tasks_time = find_elapse_time(elapse_time_path, task_id, b)
-        for name in tasks_time:
-            rep = add_to_report(full_name, task_name, project_name, name, tasks_time[name])
-    save_report(rep)
-    now = datetime.now()
-    t = now.strftime("%d-%m-%Y_%H-%M")
-    p = '' # путь до папки на яндекс диске
-    load_path = "" # путь до отчета (локальный)
-    save_path = f"{p}/report_{str(t)}.xlsx" # вставить свой  путь до папки
-    upload_file(load_path, save_path, False)
+    cmd = {}
+    elapse = {}
+    cmd_elapse = {}
+    for i in range(10):
+        cmd[f'task_{i}'] = f'tasks.task.list?order[id]=asc&filter[>CREATED_DATE]={date_from}&filter[<CREATED_DATE]={date_to}&start={index}'
+        index += 50
+    tasks_batch = b.call_batch({
+        'halt': 0,
+        'cmd': cmd
+    })
+    for t_batch in tasks_batch:
+        tasks_info = tasks_batch[t_batch]['tasks']
+        for task in tasks_info:
+            task_id = task['id']
+            task_user_id = task['responsible']['id']
+            project_name = ""
+            try:
+                project_name = task['group']['name']
+            except:
+                pass
+            elapse[f"{task_id}_{task_user_id}"] = {
+                'title': task['title'],
+                'project': project_name,
+                'user_id':  task['responsible']['id'],
+                'user_name': task['responsible']['name'],
+                'plan_time': task['durationPlan'],
+                'elapse_time': 0
+            }
+            cmd_elapse[f"{task_id}_{task['responsible']['id']}"] = f"task.elapseditem.getlist?task_id={task_id}&order[ID]=ASC&filter[USER_ID]={task_user_id}"
+        tasks_el_batch = b.call_batch({
+            'halt': 0,
+            'cmd': cmd_elapse
+        })
+        cmd_elapse = {}
+        for task_el_id in tasks_el_batch:
+            task_sec = 0
+            for el_time in tasks_el_batch[task_el_id]:
+                date_stop = el_time['DATE_STOP'].split('T')[0]
+                if date_to >= date_stop:
+                    task_sec += int(el_time['SECONDS'])
+            elapse[task_el_id]['elapse_time'] = task_sec
 
-    return 'Ok'
+            add_to_report(elapse[task_el_id]['user_name'], elapse[task_el_id]['project'], elapse[task_el_id]['title'], elapse[task_el_id]['elapse_time'], elapse[task_el_id]['plan_time'])
+    save_report()
+    folder_path = 'reports'
+    save_path = f"{folder_path}/report_{date_from}_{date_to}.xlsx"
+    upload_file(load_path, save_path, False)
+    return redirect('/')
 
 
 if __name__ == '__main__':

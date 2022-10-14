@@ -15,7 +15,8 @@ load_path = os.getenv('load_path')
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return "Hello"
+    # return render_template('index.html')
 
 
 @app.route('/forward/', methods=['POST'])
@@ -24,10 +25,11 @@ def bitrix():
     date_to = request.form['trip-l']
     index = 0
     b = Bitrix(webhook)
+    print(b)
     cmd = {}
     elapse = {}
     cmd_elapse = {}
-    for i in range(10):
+    for i in range(20):
         cmd[f'task_{i}'] = f'tasks.task.list?order[id]=asc&filter[>CREATED_DATE]={date_from}&filter[<CREATED_DATE]={date_to}&start={index}'
         index += 50
     tasks_batch = b.call_batch({

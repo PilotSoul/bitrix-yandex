@@ -15,8 +15,7 @@ load_path = os.getenv('load_path')
 
 @app.route('/')
 def index():
-    return "Hello"
-    # return render_template('index.html')
+    return render_template('index.html')
 
 
 @app.route('/forward/', methods=['POST'])

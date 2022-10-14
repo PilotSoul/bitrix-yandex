@@ -25,7 +25,7 @@ def upload_file(loadfile, savefile, replace=False):
 def add_to_report(acc_name, project_name, task_name, el_time, t_plan):
     global report
     report.loc[len(report)] = {'Ответственный': acc_name, 'Проект': project_name,
-                               'Задача': task_name, 'Затраченное время': el_time, 'Запланированное время': t_plan}
+                               'Задача': task_name, 'Затраченное время': int(el_time), 'Запланированное время': t_plan}
 
 
 def save_report():
@@ -39,6 +39,6 @@ def save_report():
                                    'Затраченное время': rep_dict[f'{key}'], 'Запланированное время': ''}
     report = report.sort_values(by=['Ответственный', 'Задача'])
     report.loc[(report["Задача"] == 'яяя'), 'Задача'] = "Итого"
-    report['Затраченное время'] = pd.to_datetime(report['Затраченное время'], unit='s').dt.strftime('%H:%M:%S')
+    report['Затраченное время'] = pd.to_datetime(report['Затраченное время'], unit='s').dt.strftime('%d %H:%M:%S')
     report.to_excel(path, index=False)
 

@@ -26,11 +26,17 @@ def bitrix():
     b = Bitrix(webhook)
     print(b)
     cmd = {}
+    cmd_before = {}
     elapse = {}
     cmd_elapse = {}
     for i in range(20):
         cmd[f'task_{i}'] = f'tasks.task.list?order[id]=asc&filter[>CREATED_DATE]={date_from}&filter[<CREATED_DATE]={date_to}&start={index}'
         index += 50
+    index = 0
+    for i in range(20, 30):
+        cmd_before[f'task_{i}'] = f'tasks.task.list?order[CREATED_DATE]=desc&filter[<CREATED_DATE]={date_from}&start={index}'
+        index += 50
+    cmd.update(cmd_before)
     tasks_batch = b.call_batch({
         'halt': 0,
         'cmd': cmd
@@ -63,7 +69,8 @@ def bitrix():
             task_sec = 0
             for el_time in tasks_el_batch[task_el_id]:
                 date_stop = el_time['DATE_STOP'].split('T')[0]
-                if date_to >= date_stop:
+                date_start = el_time['DATE_START'].split('T')[0]
+                if date_to >= date_stop and date_from >= date_start:
                     task_sec += int(el_time['SECONDS'])
             elapse[task_el_id]['elapse_time'] = task_sec
 

@@ -11,6 +11,13 @@ report = pd.DataFrame(columns=['Ответственный', 'Проект', 'З
 headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': f'OAuth {TOKEN}'}
 
 
+def convert(seconds):
+    mm, ss = divmod(seconds, 60)
+    hh, mm = divmod(mm, 60)
+
+    return "%d:%02d:%02d" % (hh, mm, ss)
+
+
 def upload_file(loadfile, savefile, replace=False):
     global URL, headers, TOKEN
     res = requests.get(f'{URL}/upload?path={savefile}&overwrite={replace}', headers=headers).json()
@@ -39,6 +46,7 @@ def save_report():
                                    'Затраченное время': rep_dict[f'{key}'], 'Запланированное время': ''}
     report = report.sort_values(by=['Ответственный', 'Задача'])
     report.loc[(report["Задача"] == 'яяя'), 'Задача'] = "Итого"
-    report['Затраченное время'] = pd.to_datetime(report['Затраченное время'], unit='s').dt.strftime('%d %H:%M:%S')
+    # report['Затраченное время'] = pd.to_datetime(report['Затраченное время'], unit='s').dt.strftime('%H:%M:%S')
+    report['Затраченное время'] = report['Затраченное время'].apply(convert)
     report.to_excel(path, index=False)
 

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html lang="ru" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>excel_processing &#8212; документация Test </title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=039e1c02" />
+    <script src="../_static/documentation_options.js?v=372fde1a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=29b1f277"></script>
+    <link rel="index" title="Алфавитный указатель" href="../genindex.html" />
+    <link rel="search" title="Поиск" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Исходный код excel_processing</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">dotenv</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">env</span> <span class="o">=</span> <span class="n">dotenv</span><span class="o">.</span><span class="n">find_dotenv</span><span class="p">()</span>
+<span class="n">dotenv</span><span class="o">.</span><span class="n">load_dotenv</span><span class="p">(</span><span class="n">dotenv_path</span><span class="o">=</span><span class="n">env</span><span class="p">)</span>
+<span class="n">URL</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">)</span>
+<span class="n">TOKEN</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;token&#39;</span><span class="p">)</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Ответственный&#39;</span><span class="p">,</span> <span class="s1">&#39;Проект&#39;</span><span class="p">,</span> <span class="s1">&#39;Задача&#39;</span><span class="p">,</span> <span class="s1">&#39;Затраченное время&#39;</span><span class="p">,</span> <span class="s1">&#39;Запланированное время&#39;</span><span class="p">])</span>
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span> <span class="s1">&#39;Accept&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span> <span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;OAuth </span><span class="si">{</span><span class="n">TOKEN</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="convert">
+<a class="viewcode-back" href="../excel_processing.html#excel_processing.convert">[документация]</a>
+<span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="n">seconds</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Конвертация времени</span>
+<span class="sd">    :param seconds:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mm</span><span class="p">,</span> <span class="n">ss</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="n">hh</span><span class="p">,</span> <span class="n">mm</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">:</span><span class="si">%02d</span><span class="s2">:</span><span class="si">%02d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">hh</span><span class="p">,</span> <span class="n">mm</span><span class="p">,</span> <span class="n">ss</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="upload_file">
+<a class="viewcode-back" href="../excel_processing.html#excel_processing.upload_file">[документация]</a>
+<span class="k">def</span> <span class="nf">upload_file</span><span class="p">(</span><span class="n">loadfile</span><span class="p">,</span> <span class="n">savefile</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Загрузка файла</span>
+<span class="sd">    :param loadfile:</span>
+<span class="sd">    :param savefile:</span>
+<span class="sd">    :param replace:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">URL</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">TOKEN</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">URL</span><span class="si">}</span><span class="s1">/upload?path=</span><span class="si">{</span><span class="n">savefile</span><span class="si">}</span><span class="s1">&amp;overwrite=</span><span class="si">{</span><span class="n">replace</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">loadfile</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">requests</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;href&#39;</span><span class="p">],</span> <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;file&#39;</span><span class="p">:</span> <span class="n">f</span><span class="p">})</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="add_to_report">
+<a class="viewcode-back" href="../excel_processing.html#excel_processing.add_to_report">[документация]</a>
+<span class="k">def</span> <span class="nf">add_to_report</span><span class="p">(</span><span class="n">acc_name</span><span class="p">,</span> <span class="n">project_name</span><span class="p">,</span> <span class="n">task_name</span><span class="p">,</span> <span class="n">el_time</span><span class="p">,</span> <span class="n">t_plan</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Добавление в отчет</span>
+<span class="sd">    :param acc_name:</span>
+<span class="sd">    :param project_name:</span>
+<span class="sd">    :param task_name:</span>
+<span class="sd">    :param el_time:</span>
+<span class="sd">    :param t_plan:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">report</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">report</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Ответственный&#39;</span><span class="p">:</span> <span class="n">acc_name</span><span class="p">,</span> <span class="s1">&#39;Проект&#39;</span><span class="p">:</span> <span class="n">project_name</span><span class="p">,</span>
+                               <span class="s1">&#39;Задача&#39;</span><span class="p">:</span> <span class="n">task_name</span><span class="p">,</span> <span class="s1">&#39;Затраченное время&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">el_time</span><span class="p">),</span> <span class="s1">&#39;Запланированное время&#39;</span><span class="p">:</span> <span class="n">t_plan</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="save_report">
+<a class="viewcode-back" href="../excel_processing.html#excel_processing.save_report">[документация]</a>
+<span class="k">def</span> <span class="nf">save_report</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Сохранение отчета</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">report</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;report.xlsx&quot;</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;Ответственный&#39;</span><span class="p">)</span>
+    <span class="n">rep_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">report</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;Ответственный&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">v</span><span class="p">,</span> <span class="s2">&quot;Затраченное время&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">report</span><span class="p">[</span><span class="s2">&quot;Ответственный&quot;</span><span class="p">]}</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">rep_dict</span><span class="p">:</span>
+        <span class="n">report</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">report</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Ответственный&#39;</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span> <span class="s1">&#39;Проект&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;Задача&#39;</span><span class="p">:</span> <span class="s1">&#39;яяя&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;Затраченное время&#39;</span><span class="p">:</span> <span class="n">rep_dict</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">],</span> <span class="s1">&#39;Запланированное время&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">}</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Ответственный&#39;</span><span class="p">,</span> <span class="s1">&#39;Задача&#39;</span><span class="p">])</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;Задача&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;яяя&#39;</span><span class="p">),</span> <span class="s1">&#39;Задача&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Итого&quot;</span>
+    <span class="c1"># report[&#39;Затраченное время&#39;] = pd.to_datetime(report[&#39;Затраченное время&#39;], unit=&#39;s&#39;).dt.strftime(&#39;%H:%M:%S&#39;)</span>
+    <span class="n">report</span><span class="p">[</span><span class="s1">&#39;Затраченное время&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">report</span><span class="p">[</span><span class="s1">&#39;Затраченное время&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">convert</span><span class="p">)</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Test</a></h1>
+
+
+
+
+
+
+
+
+<h3>Навигация</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">bitrix-yandex</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Код модуля</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Быстрый поиск</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Искать" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Adele.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

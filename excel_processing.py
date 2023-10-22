@@ -12,6 +12,11 @@ headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Au
 
 
 def convert(seconds):
+    """
+    Конвертация времени
+    :param seconds:
+    :return:
+    """
     mm, ss = divmod(seconds, 60)
     hh, mm = divmod(mm, 60)
 
@@ -19,6 +24,13 @@ def convert(seconds):
 
 
 def upload_file(loadfile, savefile, replace=False):
+    """
+    Загрузка файла
+    :param loadfile:
+    :param savefile:
+    :param replace:
+    :return:
+    """
     global URL, headers, TOKEN
     res = requests.get(f'{URL}/upload?path={savefile}&overwrite={replace}', headers=headers).json()
     print(res)
@@ -30,12 +42,25 @@ def upload_file(loadfile, savefile, replace=False):
 
 
 def add_to_report(acc_name, project_name, task_name, el_time, t_plan):
+    """
+    Добавление в отчет
+    :param acc_name:
+    :param project_name:
+    :param task_name:
+    :param el_time:
+    :param t_plan:
+    :return:
+    """
     global report
     report.loc[len(report)] = {'Ответственный': acc_name, 'Проект': project_name,
                                'Задача': task_name, 'Затраченное время': int(el_time), 'Запланированное время': t_plan}
 
 
 def save_report():
+    """
+    Сохранение отчета
+    :return:
+    """
     global report
     path = "report.xlsx"
     report = report.drop_duplicates()

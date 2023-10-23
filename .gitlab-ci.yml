@@ -7,11 +7,10 @@ before_script:
   - pip install -r requirements.txt
   - pip install fast-bitrix24
   - pip install sphinx
+  - pip install python-dotenv
 pages:
   script:
     - sphinx-build -b html docs/source public
-    - cat public/excel_processing.html
-    - ls public
     
   artifacts:
     paths:

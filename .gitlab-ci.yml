@@ -10,13 +10,11 @@ before_script:
 pages:
   script:
     - mkdir public
+    - mv -v docs/* public/
     - cd public
-    - sphinx-quickstart
-    - cd source
-    - sphinx-apidoc -o . ../../ 
-    - cd ../
+    - ls
+    - make clean
     - make html
-    - ls ../public
   artifacts:
     paths:
       # The folder that contains the files to be exposed at the Page URL

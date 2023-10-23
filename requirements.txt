@@ -1,7 +1,6 @@
 flask==2.2.2
 numpy==1.23.3
 openpyxl==3.0.10
-openssl==1.1.1q
 pandas==1.5.0
 pip
 python-dateutil==2.8.2

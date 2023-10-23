@@ -20,6 +20,10 @@ def index():
 
 @app.route('/forward/', methods=['POST'])
 def bitrix():
+    """
+    Функция для обработки инфо из битрикса
+    :return:
+    """
     date_from = request.form['trip-f']
     date_to = request.form['trip-l']
     index = 0

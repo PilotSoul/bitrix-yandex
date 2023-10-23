@@ -13,7 +13,7 @@ headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Au
 
 def convert(seconds):
     """
-    Конвертация времени
+    Конвертация
     :param seconds:
     :return:
     """

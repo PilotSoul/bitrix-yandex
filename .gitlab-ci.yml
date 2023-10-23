@@ -10,7 +10,7 @@ before_script:
 pages:
   script:
     - mkdir public
-    - sphinx-apidoc -o html docs/source/ public
+    - sphinx-build -b html docs/source/ public
     - ls public
   artifacts:
     paths:

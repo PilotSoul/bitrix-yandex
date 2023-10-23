@@ -9,12 +9,8 @@ before_script:
   - pip install sphinx
 pages:
   script:
-    - cd docs
-    - make clean
-    - make html
-    - cd ../
     - mkdir public
-    - mv  -v docs/build/html/* public/
+    - sphinx-build -b html source public
   artifacts:
     paths:
       # The folder that contains the files to be exposed at the Page URL

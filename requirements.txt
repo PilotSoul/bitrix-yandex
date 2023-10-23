@@ -11,7 +11,6 @@ six==1.16.0
 urllib3==1.26.12
 werkzeug==2.2.2
 wheel==0.37.1
-xz==5.2.5
 yadisk==1.2.16
 yarl==1.8.1
 zlib==1.2.12

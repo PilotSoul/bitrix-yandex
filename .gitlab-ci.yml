@@ -10,7 +10,7 @@ before_script:
 pages:
   script:
     - mkdir public
-    - sphinx-build -b html source public
+    - sphinx-build -b html docs/source public
   artifacts:
     paths:
       # The folder that contains the files to be exposed at the Page URL

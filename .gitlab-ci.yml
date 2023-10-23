@@ -10,7 +10,7 @@ before_script:
 pages:
   script:
     - sphinx-build -b html docs/source public
-    - cat public/app.html
+    - cat public/excel_processing.html
     - ls public
     
   artifacts:

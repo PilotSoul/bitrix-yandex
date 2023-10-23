@@ -9,6 +9,10 @@ before_script:
   - pip install sphinx
 pages:
   script:
+    - cd docs
+    - make clean
+    - make html
+    - cd ../
     - mkdir public
     - mv  -v docs/build/html/* public/
   artifacts:

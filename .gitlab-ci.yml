@@ -10,9 +10,8 @@ pages:
   script:
     - cd docs
     - make clean & make html
-    - ls
-    - echo ls
     - cd ../ & mkdir public
+    - ls
     - mv docs/build/html/ public/
   artifacts:
     paths:

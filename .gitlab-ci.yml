@@ -2,7 +2,9 @@
 image: python
 # Functions that should be executed before the build script is run
 before_script:
-  - python -m venv venv
+  - sudo apt-get install python3-distutils
+  - sudo apt-get install python3-apt
+  - python3 -m venv venv
   - . venv/bin/activate
   - pip install -r requirements.txt
 pages:

@@ -5,7 +5,6 @@ async-timeout==4.0.2
 asyncio==3.4.3
 attrs==22.1.0
 beartype==0.10.4
-bzip2==1.0.8
 ca-certificates==2022.07.19
 certifi==2022.6.15
 charset-normalizer==2.1.1

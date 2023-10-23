@@ -9,7 +9,6 @@ before_script:
   - pip install sphinx
 pages:
   script:
-    - mkdir public
     - sphinx-build -b html docs/source public
     
   artifacts:

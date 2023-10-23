@@ -6,11 +6,11 @@ before_script:
   - . venv/bin/activate
   - pip install -r requirements.txt
   - pip install sphinx
-  - mv public/build/html/ public/
 pages:
   script:
     - cd public
     - make clean & make html
+    - mv public/build/html/ public/
   artifacts:
     paths:
       # The folder that contains the files to be exposed at the Page URL

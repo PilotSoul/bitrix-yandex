@@ -10,7 +10,7 @@ before_script:
 pages:
   script:
     - mkdir public
-    - mv docs/build/html/ public/
+    - mv  -v docs/build/html/* public/
     - ls public/
   artifacts:
     paths:

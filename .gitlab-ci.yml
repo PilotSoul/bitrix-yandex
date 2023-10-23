@@ -11,7 +11,7 @@ pages:
   script:
     - mkdir public
     - cd public
-    - sphinx-quikstart
+    - sphinx-quickstart
     - cd source
     - sphinx-apidoc -o . ../../ 
     - cd ../
